@@ -72,6 +72,10 @@ constraint, e.g. to drive a depth of field effect.
 
 ### Device properties
 
+The properties are in the **Properties** tab of the Resources panel while the device is selected:
+
+![Device properties](images/screenshot_properties.png)
+
 | Property | Description |
 |---|---|
 | `Port` | UDP port to listen to (default 4000) |
