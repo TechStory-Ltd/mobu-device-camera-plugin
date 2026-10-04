@@ -1,0 +1,10 @@
+
+ TechStory OSC Camera Tracker Device for Autodesk MotionBuilder.
+
+ Drives a MotionBuilder camera in real time from the 6DoF Camera Tracker
+ OSC stream (UDP): transform, focal length, focus distance and depth of field.
+
+==  Support contact ==
+
+  TechStory Ltd
+  techstoryuk@gmail.com

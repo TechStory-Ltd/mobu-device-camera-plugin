@@ -1,0 +1,9 @@
+
+ Plugin is successfully installed.
+
+ Restart MotionBuilder, then drag "OSC Camera Tracker Device"
+ from Asset Browser > Devices into the scene.
+
+---
+  TechStory Ltd
+  techstoryuk@gmail.com
