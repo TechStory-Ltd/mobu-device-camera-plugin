@@ -34,7 +34,7 @@ namespace OSCCamera
 	//! everything the conversion needs from the device properties
 	struct ConvertSettings
 	{
-		double spaceScale{ 100.0 };			//!< wire position units to centimetres (100 - the app sends metres)
+		double spaceScale{ 1.0 };			//!< wire position units to centimetres (100 scale in the app)
 
 		double positionSign[3]{ 1.0, 1.0, 1.0 };	//!< per axis flip of the wire position (x, y, z), fixes a mismatching axis mapping
 		double rotationSign[3]{ 1.0, 1.0, 1.0 };	//!< per angle flip of the wire pan, tilt, roll
