@@ -71,3 +71,9 @@ Testing/
 .vs/
 out/
 CMakeUserPresets.json
+
+# built plugins per MotionBuilder version (input of the installer)
+bin/
+
+# local build-all helper script
+build_all.bat

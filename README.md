@@ -29,16 +29,43 @@ not calibrated are remapped from the raw encoder range to a range you set on the
 
 ## Usage
 
-1. Copy `device_oscCamera.dll` into a MotionBuilder plugins folder (e.g. `C:\Program Files\Autodesk\MotionBuilder 2025\bin\x64\plugins`)
-   and restart MotionBuilder.
-2. In the Asset Browser go to **Devices** and drag **OSC Camera Tracker Device** into the scene.
-3. In the device **Communication** tab set the **Port** to the *Target Port* of the tracker app. Make sure the phone/PC and
+1. Install the plugin, then restart MotionBuilder:
+   * **Installer** - run `Setup_TechStoryOSCCamera_MoBu.exe`, tick the MotionBuilder versions to install for
+     (the plugin goes into `bin\x64\plugins` of each selected installation, administrator rights are needed), or
+   * **Manually** - copy `device_oscCamera.dll` into a MotionBuilder plugins folder
+     (e.g. `C:\Program Files\Autodesk\MotionBuilder 2025\bin\x64\plugins`).
+2. In the Asset Browser go to **Templates > Devices** and drag **OSC Camera Tracker Device** into the scene.
+
+   ![OSC Camera Tracker Device in the Asset Browser](images/screenshot_asset.png)
+
+3. Select the device in the Navigator (**Devices**). The **General** tab has the sampling settings. Set the
+   **Sampling Rate** to the rate the tracker app streams at, so every incoming pose is picked up
+   (the default 60 is only a starting value; the measured rate of the stream is shown by the read only
+   `Receive Rate (Hz)` property):
+
+   ![Device General tab](images/screenshot_ui_general.png)
+
+4. In the device **Communication** tab set the **UDP Port** to the *Target Port* of the tracker app. Make sure the phone/PC and
    MotionBuilder are on the same network and the firewall lets UDP in on that port.
-4. Put the device **Online**. The status shows `Listening on UDP port ...`, then `Receiving data` once poses arrive,
+
+   ![Device Communication tab](images/screenshot_ui_communication.png)
+
+5. Put the device **Online**. The status shows `Listening on UDP port ...`, then `Receiving data` once poses arrive,
    or `No data` when the stream is silent for longer than the **Timeout**.
-5. Open the device **Model Binding**, create/pick a camera and bind it to the **Camera** template. The transform is driven by
+6. Open the **Model binding**, create/pick a camera and bind it to the **Camera** template. The transform is driven by
    the device, the lens (focal length, focus distance, focus angle) is connected to the camera automatically.
-6. Enable **Recording** on the device to key the incoming poses.
+   In the screenshot below the device is online (green), bound to the `OSCCamera:Reference` model and receiving data.
+   The 60 samples/s shown there is the device sampling rate used for the demonstration, in practice it follows the rate
+   of the streaming device.
+
+   ![Device online and receiving data](images/screenshot_stream_online.png)
+
+7. Enable **Recording** on the device to key the incoming poses.
+
+The camera lens is driven by the stream too: with **Use Depth of Field** on in the camera **Render Options**, the
+**Specific distance** (focus distance) and the **Focus angle** follow the device.
+
+![Camera depth of field driven by the device](images/screenshot_camera_lens.png)
 
 The device also has an **Iris** (f-number) output that a camera does not have a property for. Use it in a relation
 constraint, e.g. to drive a depth of field effect.
