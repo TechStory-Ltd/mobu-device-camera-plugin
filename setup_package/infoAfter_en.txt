@@ -1,8 +1,23 @@
 
- Plugin is successfully installed.
+ The OSC Camera Tracker Device plugin is successfully installed.
 
  Restart MotionBuilder, then drag "OSC Camera Tracker Device"
  from Asset Browser > Devices into the scene.
+
+ Quick start
+ 1. In the Camera Motion Studio app set up the OSC stream to this
+    computer and note its Target Port.
+ 2. Select the device in the Navigator, set its UDP Port (Communication
+    tab) to that Target Port and put the device Online. The phone and
+    the computer must be on the same network, and the firewall must let
+    UDP in on that port.
+ 3. In the Model binding bind a camera to the Camera template: it
+    follows the phone, with its lens and depth of field.
+ 4. Tick Recording on the device to key the incoming poses.
+
+ Markers (optional): in the app turn on Settings > Stream > Scene link >
+ Accept a marker link, then add models in the Markers tab of the device
+ and tick "Send markers to the phone".
 
 ---
   TechStory Ltd

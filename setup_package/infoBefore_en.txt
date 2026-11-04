@@ -1,8 +1,24 @@
 
  TechStory OSC Camera Tracker Device for Autodesk MotionBuilder.
 
- Drives a MotionBuilder camera in real time from the 6DoF Camera Tracker
- OSC stream (UDP): transform, focal length, focus distance and depth of field.
+ This plugin drives a MotionBuilder camera in real time from the OSC
+ stream (UDP) of the Camera Motion Studio app - your phone becomes a
+ camera tracker.
+
+ * Camera transform, focal length, focus distance and depth of field
+   (focus angle), the sensor size of the app as the camera film back.
+ * Smooth live motion on Wi-Fi: the poses are placed on the timeline of
+   the phone, with an automatic delay that follows the network jitter.
+ * Recording of the incoming poses as animation keys, one key per real
+   sensor sample.
+ * Remote control: the OSC buttons of the app run the MotionBuilder
+   transport (play, stop, record, go to start / end, step).
+ * Markers: send objects of the scene to the phone to aim at and hold
+   focus on (roles Focus, Aim and Ref), and let a Ref object carry the
+   live camera, for example a cart or a vehicle.
+
+ Installs for MotionBuilder 2017 - 2027, select the versions on the
+ next page. Administrator rights are needed.
 
 ==  Support contact ==
 

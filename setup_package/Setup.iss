@@ -5,7 +5,14 @@
 ;   ..\bin\<MotionBuilder version>\device_oscCamera.dll   - the plugin built with -DMOBU_VERSION=<version>
 
 #define MyAppName "TechStory OSC Camera Tracker Device for Autodesk MotionBuilder"
-#define MyAppVersion "1.0"
+; MyAppVersion and MyAppVersionInfo come from version.iss, which the cmake build rewrites at every build (cmake/BuildNumber.cmake),
+; so the installer carries the version of the plugin it packs. The fallback is for a checkout that has not been built yet.
+#ifexist "version.iss"
+#include "version.iss"
+#else
+#define MyAppVersion "1.0.0"
+#define MyAppVersionInfo "1.0.0.0"
+#endif
 #define MyAppPublisher "TechStory Ltd"
 #define MyAppExeName "Setup_TechStoryOSCCamera_MoBu"
 #define MyPluginDll "device_oscCamera.dll"
@@ -20,6 +27,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"; InfoBeforeFile:"infoBefor
 AppId={{7C3B5E8A-9D41-4F6B-A2E7-3D58B1C6F094}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
+VersionInfoVersion={#MyAppVersionInfo}
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 CreateAppDir=no

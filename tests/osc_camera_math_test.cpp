@@ -1,4 +1,7 @@
 /**	\file	osc_camera_math_test.cpp
+*	Copyright (c) 2026 TechStory Ltd
+*	MIT License, see the LICENSE file in the repository root
+*
 *	Standalone test for osc_camera_math.h (no MotionBuilder SDK needed).
 *	Build target: device_oscCamera_math_test (excluded from the default build), the exit code is the number of failed checks.
 */
@@ -69,6 +72,29 @@ static void TestAxes()
 	CHECK(Near(s.forward[2], std::cos(OSCCamera::DegToRad(45))));
 }
 
+static void TestSceneIsTheRotationFrameTurned()
+{
+	// the positions (scene) are the rotation frame turned by the camera pre-rotation about Y: (x, y, z) -> (z, y, -x) for +90,
+	// so the camera with its pre-rotation moves the way it looks
+	const double c = std::cos(OSCCamera::DegToRad(OSCCamera::kCameraPreRotationY));
+	const double s = std::sin(OSCCamera::DegToRad(OSCCamera::kCameraPreRotationY));
+	const double wires[][3] = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 }, { 0.3, -2.0, 1.5 } };
+	for (const auto& w : wires)
+	{
+		double frame[3], scene[3], back[3];
+		OSCCamera::detail::WireToWorld(w, frame);
+		OSCCamera::detail::WireToScene(w, scene);
+		CHECK(Near3(scene, frame[0] * c + frame[2] * s, frame[1], -frame[0] * s + frame[2] * c));
+		OSCCamera::detail::SceneToWire(scene, back);
+		CHECK(Near3(back, w[0], w[1], w[2]));
+	}
+
+	// the tracker zero pose looks along the scene -Z with the pre-rotation, as the FBX camera
+	OSCCamera::CameraState zero = Axes(0, 0, 0);
+	CHECK(Near3(zero.forward, 1, 0, 0));
+	CHECK(Near(zero.forward[0] * c + zero.forward[2] * s, 0.0) && Near(-zero.forward[0] * s + zero.forward[2] * c, -1.0));
+}
+
 static void TestAxesAreARightHandedRotation()
 {
 	// for any angles the axes must stay orthonormal and right = forward x up (a proper rotation, no mirroring)
@@ -98,33 +124,36 @@ static void TestPosition()
 	OSCCamera::PoseMessage pose;
 	pose.x = 1.0f; pose.y = 2.0f; pose.z = 3.0f;
 
-	OSCCamera::ConvertSettings settings;	// default scale 100: the app sends metres, the scene is in cm
+	// the stream is in metres and the scene in centimetres: the defaults convert, with the Space Scale property at 1
+	OSCCamera::ConvertSettings settings;
+	CHECK(settings.streamUnitCm == 100.0 && settings.spaceScale == 1.0);
 
-	// wire (right, forward, up) -> world (forward, up, right)
+	// wire (right, forward, up) -> scene (right, up, back), as the FBX export
 	OSCCamera::CameraState s = OSCCamera::Convert(pose, nullptr, settings);
-	CHECK(Near3(s.position, 200.0, 300.0, 100.0));
+	CHECK(Near3(s.position, 100.0, 300.0, -200.0));
 
-	// the app already sends centimetres (Space scale = 100 in the app)
+	// the Space Scale property is an extra multiplier on top of the conversion
+	settings.spaceScale = 2.0;
+	s = OSCCamera::Convert(pose, nullptr, settings);
+	CHECK(Near3(s.position, 200.0, 600.0, -400.0));
+
+	// a stream that names another unit: centimetres are taken as they are, millimetres divided by ten
 	settings.spaceScale = 1.0;
+	settings.streamUnitCm = OSCCamera::CentimetresPerUnit("cm");
 	s = OSCCamera::Convert(pose, nullptr, settings);
-	CHECK(Near3(s.position, 2.0, 3.0, 1.0));
-
-	// per axis sign, here the wire forward
-	settings.positionSign[1] = -1.0;
+	CHECK(Near3(s.position, 1.0, 3.0, -2.0));
+	settings.streamUnitCm = OSCCamera::CentimetresPerUnit("mm");
 	s = OSCCamera::Convert(pose, nullptr, settings);
-	CHECK(Near3(s.position, -2.0, 3.0, 1.0));
+	CHECK(Near3(s.position, 0.1, 0.3, -0.2));
 }
 
-static void TestRotationSign()
+static void TestPan()
 {
 	OSCCamera::PoseMessage pose;
 	pose.pan = 90.0f;
 
 	OSCCamera::ConvertSettings settings;
 	CHECK(Near3(OSCCamera::Convert(pose, nullptr, settings).forward, 0, 0, 1));
-
-	settings.rotationSign[0] = -1.0;
-	CHECK(Near3(OSCCamera::Convert(pose, nullptr, settings).forward, 0, 0, -1));
 }
 
 static void TestLens()
@@ -233,9 +262,10 @@ static void TestUnwrap()
 int main()
 {
 	TestAxes();
+	TestSceneIsTheRotationFrameTurned();
 	TestAxesAreARightHandedRotation();
 	TestPosition();
-	TestRotationSign();
+	TestPan();
 	TestLens();
 	TestFocusAngle();
 	TestUnwrap();
