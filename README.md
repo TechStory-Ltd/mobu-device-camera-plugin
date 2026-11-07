@@ -8,14 +8,6 @@ transform, focal length, focus distance and the depth of field cone (focus angle
 poses as animation keys, runs the MotionBuilder transport from the app's buttons, and can send objects of the scene to
 the phone as markers to aim at and hold focus on.
 
-It needs Camera Motion Studio of **2026-10-09 or newer**: the pose and lens messages changed on 2026-10-08 (section 9 of the
-app's `OSC_PROTOCOL.md`). The older layouts are not read - the device status says
-`Old stream layout: update the tracker app` when it sees one. The newest app sends the camera as `/livetracker/pose/ref`, relative
-to its **Ref** marker (section 2.8): the device places that camera by the Ref marker of the scene, see
-[Camera relative to the Ref](#camera-relative-to-the-ref).
-
-Plugin file: `device_oscCamera.dll`. Windows, MotionBuilder 2025 by default (see [Build](#build) for other versions).
-
 ## OSC stream
 
 The device accepts these messages and ignores everything else. A truncated or malformed datagram is rejected,
